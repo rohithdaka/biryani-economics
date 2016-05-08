@@ -3,8 +3,8 @@ import Html.Events exposing (..)
 import Html.Attributes exposing (..)
 import Basics exposing (..)
 import String exposing (..)
-import StartApp.Simple as S exposing(..)
-
+import StartApp.Simple as S
+import Regex as R
 
 
 type alias Model = 
@@ -32,7 +32,10 @@ update action model =
 indianNumberFormat: String -> String
 indianNumberFormat n =
     let 
-        cleansedNumericString = concat (split "," n)
+        cleansedNumericString = split "," n 
+                                |> concat 
+                                |> R.replace R.All (R.regex "[^0-9]") (\_ -> "")
+
         l = String.length cleansedNumericString
     in 
         if l < 4 then 
@@ -44,9 +47,6 @@ indianNumberFormat n =
 
 
 view address model =
-    let savingsAmountString = model.savingsAmount
-        savingsAmountLength = String.length savingsAmountString
-    in
     div []
         [ h1 
             [] 
@@ -56,8 +56,8 @@ view address model =
             [ text "Suppose you have ₹ "
             , input 
                 [ type' "text"
-                , value savingsAmountString
-                , size savingsAmountLength
+                , value model.savingsAmount
+                , size (String.length model.savingsAmount)
                 , on "input" targetValue (Signal.message address << UpdateSavings)
                 ]
                 []
