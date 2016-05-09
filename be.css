@@ -1,0 +1,18 @@
+html {
+    min-width: 900px;
+    width:90%;
+}
+
+p {
+    margin:1px;
+    padding:1px;
+    border:1px;
+    text-align: left;    
+    font-family: sans-serif;
+    text-indent: 1em;
+}
+
+
+h1 {
+    text-align: center;
+}
