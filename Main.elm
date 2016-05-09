@@ -1,12 +1,15 @@
-import Html exposing (div,h1,p,text,input,br)
-import Html.Events as HE exposing (on,targetValue)
-import Html.Attributes as HA exposing (type',size,value)
+import Html exposing (..)
+import Html.Events as HE exposing (..)
+import Html.Attributes as HA exposing (..)
 import Basics exposing (..)
-import String exposing (toFloat,left,dropLeft)
+import String exposing (..)
 import StartApp.Simple as S exposing(start)
-import Regex as R exposing(replace,regex)
-import Result exposing (toMaybe)
-import Maybe exposing (withDefault)
+import Regex as R exposing(..)
+import Result exposing (..)
+import Maybe exposing (..)
+
+port title : String
+port title = "Biryani Economics"
 
 type alias Model = 
     { savings: String
@@ -109,13 +112,13 @@ pluralString (a, b) n =
         " " ++ b
 
 view address model =
-    div []
+    body []
         [ h1 
             [] 
             [ text "Biryani Economics"
             ]
         , p []
-            [ text "The goal of this interactive essay is to demonstrate the effect of inflation on your ability to purchase biryanis."
+            [ text "The essay is to demonstrate the effect of inflation on your ability to purchase biryanis."
             ]
         , p 
             [] 
@@ -202,11 +205,12 @@ view address model =
                 ]
                 []
             , text (pluralString ("year", "years") (Basics.round model.numberOfYears))
-            
-            , br [] []
-            , text (model |> concludingRemark)
             ]
+        , p 
+            []
+            [ text (model |> concludingRemark)]
         ]
+
 
 
 

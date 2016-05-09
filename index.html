@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
-<html><head><meta charset="UTF-8"><title>Main</title><style>html,head,body { padding:0; margin:0; }
-body { font-family: calibri, helvetica, arial, sans-serif; }</style><script type="text/javascript">var Elm = Elm || { Native: {} };Elm.Native.Array = {};
+<html><head><meta charset="UTF-8"><title>Biryani Economics</title>
+<meta name ="author" content ="Rohith Daka" >
+<meta name = "description" content = "An interactive essay about inflation's effect on your savings">
+<link rel="stylesheet" href="be.css"><script type="text/javascript">var Elm = Elm || { Native: {} };Elm.Native.Array = {};
 Elm.Native.Array.make = function(localRuntime) {
 
 	localRuntime.Native = localRuntime.Native || {};
@@ -10504,12 +10506,10 @@ Elm.Main.make = function (_elm) {
    var UpdatePrice = function (a) {    return {ctor: "UpdatePrice",_0: a};};
    var UpdateSavings = function (a) {    return {ctor: "UpdateSavings",_0: a};};
    var view = F2(function (address,model) {
-      return A2($Html.div,
+      return A2($Html.body,
       _U.list([]),
       _U.list([A2($Html.h1,_U.list([]),_U.list([$Html.text("Biryani Economics")]))
-              ,A2($Html.p,
-              _U.list([]),
-              _U.list([$Html.text("The goal of this interactive essay is to demonstrate the effect of inflation on your ability to purchase biryanis.")]))
+              ,A2($Html.p,_U.list([]),_U.list([$Html.text("The essay is to demonstrate the effect of inflation on your ability to purchase biryanis.")]))
               ,A2($Html.p,
               _U.list([]),
               _U.list([$Html.text("Suppose that you have ₹ ")
@@ -10610,9 +10610,8 @@ Elm.Main.make = function (_elm) {
                                  return A2($Signal.message,address,UpdateYears(_p9));
                               })]),
                       _U.list([]))
-                      ,$Html.text(A2(pluralString,{ctor: "_Tuple2",_0: "year",_1: "years"},$Basics.round(model.numberOfYears)))
-                      ,A2($Html.br,_U.list([]),_U.list([]))
-                      ,$Html.text(concludingRemark(model))]))]));
+                      ,$Html.text(A2(pluralString,{ctor: "_Tuple2",_0: "year",_1: "years"},$Basics.round(model.numberOfYears)))]))
+              ,A2($Html.p,_U.list([]),_U.list([$Html.text(concludingRemark(model))]))]));
    });
    var initialModel = {savings: indianNumberFormat($Basics.toString(100000))
                       ,price: indianNumberFormat($Basics.toString(250))
@@ -10621,6 +10620,7 @@ Elm.Main.make = function (_elm) {
                       ,inflation: 5.5};
    var main = $StartApp$Simple.start({model: initialModel,update: update,view: view});
    var Model = F5(function (a,b,c,d,e) {    return {savings: a,price: b,interest: c,inflation: d,numberOfYears: e};});
+   var title = Elm.Native.Port.make(_elm).outbound("title",function (v) {    return v;},"Biryani Economics");
    return _elm.Main.values = {_op: _op
                              ,Model: Model
                              ,initialModel: initialModel

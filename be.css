@@ -1,12 +1,11 @@
+html,head,body { padding:0; margin:0; }
+
 html {
-    min-width: 900px;
-    width:90%;
+    min-width: 800px;
+    width:70%;
 }
 
-p {
-    margin:1px;
-    padding:1px;
-    border:1px;
+body {
     text-align: left;    
     font-family: sans-serif;
     text-indent: 1em;
