@@ -1,12 +1,12 @@
-import Html exposing (..)
-import Html.Events as HE exposing (..)
-import Html.Attributes as HA exposing (..)
+import Html exposing (div,h1,p,text,input,br)
+import Html.Events as HE exposing (on,targetValue)
+import Html.Attributes as HA exposing (type',size,value)
 import Basics exposing (..)
-import String exposing (..)
-import StartApp.Simple as S
-import Regex as R
-import Result 
-import Maybe 
+import String exposing (toFloat,left,dropLeft)
+import StartApp.Simple as S exposing(start)
+import Regex as R exposing(replace,regex)
+import Result exposing (toMaybe)
+import Maybe exposing (withDefault)
 
 type alias Model = 
     { savings: String
