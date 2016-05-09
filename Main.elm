@@ -18,11 +18,11 @@ type alias Model =
 
 
 initialModel = 
-    { savings = 10000 |> toString |> indianNumberFormat
+    { savings = 100000 |> toString |> indianNumberFormat
     , price = 250 |> toString |> indianNumberFormat
-    , interest = 5
+    , interest = 4
     , numberOfYears = 1
-    , inflation = 3
+    , inflation = 5.5
     }
 
 type Action 
@@ -93,20 +93,20 @@ concludingRemark model =
         i = (model |> initialBiryanis)
     in 
         if f < i then
-            "It is like you lost your money. You should be more careful by keeping your money some place where you get more interest or by demanding your elected representatives to reduce inflation"
+            "You are poorer than before. Keep your money some place where you get more interest or demand your elected representatives to reduce inflation"
         else if f == i then
-            "You managed to protect your money's value. Not bad. You kept up with the inflation."
-        else if f > i && f < ( (Basics.toFloat i) * (1 + 7/1200)^(12*model.numberOfYears) |> round ) then
+            "You managed to protect your money's value. Not bad."
+        else if f > i && f < ( (Basics.toFloat i) * (1 + 9/1200)^(12*model.numberOfYears) |> round ) then
             "Good Job! You became richer by beating the inflation"
         else 
             "Excellent!! You either worked really hard or have resorted to crony rent seeking mechanism through politicians "
 
-yearString: Model -> String
-yearString model =
-    if model.numberOfYears == 1 then
-        " year"
+pluralString: (String, String) -> Int -> String
+pluralString (a, b) n =
+    if n == 1 then
+        " " ++ a
     else 
-        " years"
+        " " ++ b
 
 view address model =
     div []
@@ -128,8 +128,7 @@ view address model =
                 ]
                 []
             , text " in your savings account." 
-            , br [] []
-            , text "Biryani price is ₹ " 
+            , text " Biryani price is ₹ " 
             , input 
                 [ type' "text"
                 , value model.price
@@ -137,23 +136,17 @@ view address model =
                 , on "input" targetValue (Signal.message address << UpdatePrice)
                 ]
                 []
-            , text (". So you can buy " ++ (model |> initialBiryanis |> toString |> indianNumberFormat) ++ " biryanis right now.")
+            , br [] []
+            , text "You can buy "
+            , text (model |> initialBiryanis |> toString |> indianNumberFormat) 
+            , text (pluralString ("biryani", "biryanis") (model |> initialBiryanis) )
+            , text " at present."
             ]
         , p
             []
-            [ text "Let us consider the interest rate of your savings account. "
-            , input 
-                [ type' "range"
-                , value (toString model.interest)
-                , HA.max "10"
-                , HA.min "0"
-                , HA.step "0.01"
-                , on "input" targetValue (Signal.message address << UpdateInterest)
-                ]
-                []
-            , text ((toString model.interest) ++ "%")
-            , br [] []
-            , text "This means, after " 
+            [ text "You would have ₹ " 
+            , text (model |> finalSavings |> toString |> indianNumberFormat) 
+            , text " after " 
             , input 
                 [ type' "number"
                 , value (toString model.numberOfYears) 
@@ -164,12 +157,23 @@ view address model =
                 , on "change" targetValue (Signal.message address << UpdateYears)
                 ]
                 []
-            , text (yearString model)
-            , text (", you would have ₹ " ++ (model |> finalSavings |> toString |> indianNumberFormat) )
+            , text (pluralString ("year", "years") (Basics.round model.numberOfYears))
+            , text " if savings bank interest rate is: "
+            , text ((toString model.interest) ++ "%")
+            , input 
+                [ type' "range"
+                , value (toString model.interest)
+                , HA.max "10"
+                , HA.min "0"
+                , HA.step "0.01"
+                , on "input" targetValue (Signal.message address << UpdateInterest)
+                ]
+                []
             ]
         , p 
             []
-            [ text "However, if the inflation of the currency is" 
+            [ text "However, when the inflation is " 
+            , text ((toString model.inflation) ++ "%")
             , input 
                 [ type' "range"
                 , value (toString model.inflation)
@@ -179,8 +183,14 @@ view address model =
                 , on "input" targetValue (Signal.message address << UpdateInflation)
                 ]
                 []
-            , text ((toString model.inflation) ++ "%")
-            , text (", it increases the price of biryani to ₹ " ++ (model |> finalPrice |> toString |> indianNumberFormat) ++ " after ")
+            , text (", the price of biryani becomes ₹ " ++ (model |> finalPrice |> toString |> indianNumberFormat)) 
+            ]
+        , p 
+            []
+            [ text "So you could buy "
+            , text (model |> finalBiryanis |> toString |> indianNumberFormat )
+            , text (pluralString ("biryani", "biryanis") (model |> finalBiryanis) )
+            , text " after "
             ,  input 
                 [ type' "number"
                 , value (toString model.numberOfYears) 
@@ -191,13 +201,9 @@ view address model =
                 , on "change" targetValue (Signal.message address << UpdateYears)
                 ]
                 []
-            , text (yearString model)
-            ]
-        , p 
-            []
-            [ text "So you can buy "
-            , text (model |> finalBiryanis |> toString |> indianNumberFormat )
-            , text " biryanis. "
+            , text (pluralString ("year", "years") (Basics.round model.numberOfYears))
+            
+            , br [] []
             , text (model |> concludingRemark)
             ]
         ]
