@@ -1,15 +1,13 @@
 import Html exposing (..)
 import Html.Events as HE exposing (..)
 import Html.Attributes as HA exposing (..)
+import Html.App as HApp exposing (..)
 import Basics exposing (..)
 import String exposing (..)
-import StartApp.Simple as S exposing(start)
 import Regex as R exposing(..)
 import Result exposing (..)
 import Maybe exposing (..)
-
-port title : String
-port title = "Biryani Economics"
+import Json.Decode as J
 
 type alias Model = 
     { savings: String
@@ -28,16 +26,16 @@ initialModel =
     , inflation = 5.5
     }
 
-type Action 
+type Msg 
     = UpdateSavings String
     | UpdatePrice String
     | UpdateInterest String
     | UpdateYears String
     | UpdateInflation String
 
-update: Action -> Model -> Model
-update action model =
-    case action of 
+update: Msg -> Model -> Model
+update msg model =
+    case msg of 
         UpdateSavings n -> {model | savings = (n |> indianNumberFormat)}
         UpdatePrice n -> {model | price = (n |> indianNumberFormat)}
         UpdateInterest n -> {model | interest = (n |> String.toFloat|> Result.toMaybe |> Maybe.withDefault 0)}
@@ -111,7 +109,8 @@ pluralString (a, b) n =
     else 
         " " ++ b
 
-view address model =
+view: Model -> Html Msg
+view model =
     body []
         [ h1 
             [] 
@@ -127,7 +126,7 @@ view address model =
                 [ type' "text"
                 , value model.savings
                 , size (String.length model.savings)
-                , on "input" targetValue (Signal.message address << UpdateSavings)
+                , on "input" (J.map UpdateSavings targetValue)
                 ]
                 []
             , text " in your savings account." 
@@ -136,7 +135,7 @@ view address model =
                 [ type' "text"
                 , value model.price
                 , size (String.length model.price)
-                , on "input" targetValue (Signal.message address << UpdatePrice)
+                , on "input" (J.map UpdatePrice targetValue)
                 ]
                 []
             , br [] []
@@ -157,7 +156,7 @@ view address model =
                 , HA.max "999"
                 , HA.min "0"
                 , HA.step "1"
-                , on "change" targetValue (Signal.message address << UpdateYears)
+                , on "change" (J.map UpdateYears targetValue)
                 ]
                 []
             , text (pluralString ("year", "years") (Basics.round model.numberOfYears))
@@ -169,7 +168,7 @@ view address model =
                 , HA.max "10"
                 , HA.min "0"
                 , HA.step "0.01"
-                , on "input" targetValue (Signal.message address << UpdateInterest)
+                , on "input" (J.map UpdateInterest targetValue)
                 ]
                 []
             ]
@@ -183,7 +182,7 @@ view address model =
                 , HA.max "10"
                 , HA.min "0"
                 , HA.step "0.01"
-                , on "input" targetValue (Signal.message address << UpdateInflation)
+                , on "input" (J.map UpdateInflation targetValue)
                 ]
                 []
             , text (", the price of biryani becomes ₹ " ++ (model |> finalPrice |> toString |> indianNumberFormat)) 
@@ -201,7 +200,7 @@ view address model =
                 , HA.max "999"
                 , HA.min "0"
                 , HA.step "1"
-                , on "change" targetValue (Signal.message address << UpdateYears)
+                , on "change" (J.map UpdateYears targetValue)
                 ]
                 []
             , text (pluralString ("year", "years") (Basics.round model.numberOfYears))
@@ -217,4 +216,4 @@ view address model =
 
 
 main =
-    S.start {model = initialModel, update =update, view =view}
+    HApp.beginnerProgram {model = initialModel, update =update, view =view}
